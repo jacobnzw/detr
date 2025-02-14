@@ -60,6 +60,7 @@ class Transformer(nn.Module):
 
 
 class TransformerEncoder(nn.Module):
+    """Generic N layer encoder with masking."""
 
     def __init__(self, encoder_layer, num_layers, norm=None):
         super().__init__()
@@ -84,6 +85,7 @@ class TransformerEncoder(nn.Module):
 
 
 class TransformerDecoder(nn.Module):
+    """Generic N layer decoder with masking."""
 
     def __init__(self, decoder_layer, num_layers, norm=None, return_intermediate=False):
         super().__init__()
@@ -125,6 +127,7 @@ class TransformerDecoder(nn.Module):
 
 
 class TransformerEncoderLayer(nn.Module):
+    """Encoder layer block."""
 
     def __init__(self, d_model, nhead, dim_feedforward=2048, dropout=0.1,
                  activation="relu", normalize_before=False):
@@ -151,6 +154,8 @@ class TransformerEncoderLayer(nn.Module):
                      src_mask: Optional[Tensor] = None,
                      src_key_padding_mask: Optional[Tensor] = None,
                      pos: Optional[Tensor] = None):
+        # Each encoder layer has position embeddings added to the input.
+        # This is the main difference with the original Transformer implementation.
         q = k = self.with_pos_embed(src, pos)
         src2 = self.self_attn(q, k, value=src, attn_mask=src_mask,
                               key_padding_mask=src_key_padding_mask)[0]
@@ -185,6 +190,7 @@ class TransformerEncoderLayer(nn.Module):
 
 
 class TransformerDecoderLayer(nn.Module):
+    """Decoder layer block."""
 
     def __init__(self, d_model, nhead, dim_feedforward=2048, dropout=0.1,
                  activation="relu", normalize_before=False):
